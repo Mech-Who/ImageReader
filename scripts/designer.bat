@@ -10,7 +10,7 @@ if "%1"=="" goto input
 if not "%1"=="" goto normal
 
 :input
-set /p ui_file=Please input the "qrc" file to use: 
+set /p ui_file=Please input the "ui" file to use: 
 goto command
 
 :usage
