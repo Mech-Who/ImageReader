@@ -1,5 +1,11 @@
+import os
 from pathlib import Path
-from typing import Union
+from typing import Union, List
+
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QTreeWidgetItem
+
+from src.config.path_config import ASSETS_ROOT
 
 
 def getFileType(filename: Union[str, Path]) -> str:
@@ -9,3 +15,27 @@ def getFileType(filename: Union[str, Path]) -> str:
         return "dir"
     else:
         return "file"
+
+
+def create_top_item(top_item: QTreeWidgetItem, files: Union[List[str], List[Path]]) -> None:
+    """
+    递归建立文件树
+    """
+    for file_path in files:
+        # print(file_path)
+        if not isinstance(file_path, Path):
+            file_path = Path(file_path)
+        child = QTreeWidgetItem()
+        child.setText(0, file_path.stem)
+        child.setText(1, getFileType(file_path))
+        if file_path.suffix in ["png", "jpg", "jpeg", "gif"]:
+            child.setIcon(0, QIcon(str(ASSETS_ROOT / "icon/img.png")))
+        elif file_path.is_dir():
+            child.setIcon(
+                0, QIcon(str(ASSETS_ROOT / "icon/dir-folder.png")))
+            child_files = [file_path / file
+                           for file in os.listdir(str(file_path))]
+            self.create_top_item(child, child_files)
+        else:
+            child.setIcon(0, QIcon(str(ASSETS_ROOT / "icon/file.png")))
+        top_item.addChild(child)
