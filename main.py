@@ -12,4 +12,4 @@ window = MainWindow()
 window.show()
 
 # 结束QApplication
-sys.exit(app.exec_())
+sys.exit(app.exec())
