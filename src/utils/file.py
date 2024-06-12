@@ -1,6 +1,8 @@
 from pathlib import Path
+from typing import Union
 
-def getFileType(filename: str|Path) -> str:
+
+def getFileType(filename: Union[str, Path]) -> str:
     if not isinstance(filename, Path):
         filename = Path(filename)
     if filename.is_dir():
