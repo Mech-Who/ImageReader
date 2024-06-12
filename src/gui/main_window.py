@@ -5,13 +5,13 @@ from typing import List, Dict, Tuple, Union
 # 任何一个PySide界面程序都需要使用QApplication
 # 我们要展示一个普通的窗口，所以需要导入QWidget，用来让我们自己的类继承
 from PySide6.QtGui import QImage, QIcon
-from PySide6.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QGraphicsScene, QTreeWidgetItem
-from PySide6.QtCore import Qt, Slot, Signal
+from PySide6.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QGraphicsScene, QTreeWidgetItem, QFileSystemModel, QHeaderView, QSizePolicy
+from PySide6.QtCore import Qt, Slot, Signal, QModelIndex
 
 # 导入我们生成的界面
 from src.gui.gen.Ui_MainWindow import Ui_MainWindow
 from src.config.path_config import PROJECT_ROOT, ASSETS_ROOT
-from src.utils.file import getFileType, create_top_item
+from src.utils.file import getFileType, create_top_item, show_img_in_graphics_view
 
 # 继承QWidget类，以获取其属性和方法
 
@@ -60,18 +60,34 @@ class MainWindow(QMainWindow):
     def on_actionselect_directory_triggered(self):
         dir_name = QFileDialog.getExistingDirectory(
             self, "选择图片目录", dir=str(PROJECT_ROOT))
-        # print(f"open dir: {dir_name}")
         self.dir_path = Path(dir_name)
-        self.dir_files = [self.dir_path / file 
+        self.dir_files = [self.dir_path / file
                           for file in os.listdir(self.dir_path)]
-        # print(self.dir_files[0])
-        tree = self.ui.fileTreeWidget
-        top_item = QTreeWidgetItem(tree)
-        top_item.setText(0, str(self.dir_path.stem))
-        top_item.setText(1, getFileType(self.dir_path))
-        top_item.setIcon(0, QIcon(str(ASSETS_ROOT / "icon/dir-folder.png")))
+        tree = self.ui.fileTreeView
+        # # 设置自适应
+        # tree.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # header = tree.header()
+        # header.setSectionResizeMode(QHeaderView.Stretch)
+        # 设置数据
+        self.tree_model = QFileSystemModel()
+        self.tree_model.setRootPath(str(self.dir_path.absolute()))
+        tree.setModel(self.tree_model)
+        tree.setRootIndex(self.tree_model.index(str(self.dir_path.absolute())))
+        # # 自适应行列
+        # tree.resizeColumnToContents(0)  # 调整列的大小以适应内容
 
-        self.create_top_item(top_item, self.dir_files)
+    @Slot(QModelIndex)
+    def on_fileTreeView_expanded(self, index):
+        tree = self.ui.fileTreeView
+        file_info = tree.model().fileInfo(index)
+        file_name = file_info.absoluteFilePath()
+        print(file_name)
 
-        tree.addTopLevelItem(top_item)
-        # tree.expandAll()
+    @Slot(QModelIndex)
+    def on_fileTreeView_clicked(self, index):
+        tree = self.ui.fileTreeView
+        file_info = tree.model().fileInfo(index)
+        file_name = Path(file_info.absoluteFilePath())
+        if file_name.suffix.lower() in ['.jpg', '.jpeg', '.gif', '.png']:
+            show_img_in_graphics_view(self.ui.graphicsView, file_name)
+            self.ui.imageLabel.setText(f"{file_name.stem}")

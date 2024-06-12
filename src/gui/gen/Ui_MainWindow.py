@@ -18,8 +18,8 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QGraphicsView, QGridLayout, QHeaderView,
     QLabel, QMainWindow, QMenu, QMenuBar,
-    QSizePolicy, QStatusBar, QTabWidget, QTreeWidget,
-    QTreeWidgetItem, QWidget)
+    QSizePolicy, QStatusBar, QTabWidget, QTreeView,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -53,10 +53,10 @@ class Ui_MainWindow(object):
         self.dirTab.setObjectName(u"dirTab")
         self.gridLayout_2 = QGridLayout(self.dirTab)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.fileTreeWidget = QTreeWidget(self.dirTab)
-        self.fileTreeWidget.setObjectName(u"fileTreeWidget")
+        self.fileTreeView = QTreeView(self.dirTab)
+        self.fileTreeView.setObjectName(u"fileTreeView")
 
-        self.gridLayout_2.addWidget(self.fileTreeWidget, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.fileTreeView, 0, 0, 1, 1)
 
         self.tabWidget.addTab(self.dirTab, "")
         self.otherTab = QWidget()
@@ -85,7 +85,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -97,8 +97,8 @@ class Ui_MainWindow(object):
         self.actionselect_directory.setText(QCoreApplication.translate("MainWindow", u"select directory", None))
         self.actionselect_csv_file.setText(QCoreApplication.translate("MainWindow", u"select csv file", None))
         self.imageLabel.setText(QCoreApplication.translate("MainWindow", u"\u56fe\u7247Label", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.dirTab), QCoreApplication.translate("MainWindow", u"Tab 1", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.otherTab), QCoreApplication.translate("MainWindow", u"Tab 2", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.dirTab), QCoreApplication.translate("MainWindow", u"\u6587\u4ef6\u76ee\u5f55", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.otherTab), QCoreApplication.translate("MainWindow", u"\u5f85\u5b9a", None))
         self.fileMenu.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6", None))
     # retranslateUi
 
