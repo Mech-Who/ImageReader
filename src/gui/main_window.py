@@ -1,11 +1,13 @@
 import os
+import csv
 from pathlib import Path
 from typing import List, Dict, Tuple, Union
 
+import pandas as pd
 # 任何一个PySide界面程序都需要使用QApplication
 # 我们要展示一个普通的窗口，所以需要导入QWidget，用来让我们自己的类继承
-from PySide6.QtGui import QImage, QIcon
-from PySide6.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QGraphicsScene, QTreeWidgetItem, QFileSystemModel, QHeaderView, QSizePolicy
+from PySide6.QtGui import QStandardItemModel, QStandardItem
+from PySide6.QtWidgets import QMainWindow, QFileDialog, QGraphicsScene, QFileSystemModel
 from PySide6.QtCore import Qt, Slot, Signal, QModelIndex
 
 # 导入我们生成的界面
@@ -64,17 +66,11 @@ class MainWindow(QMainWindow):
         self.dir_files = [self.dir_path / file
                           for file in os.listdir(self.dir_path)]
         tree = self.ui.fileTreeView
-        # # 设置自适应
-        # tree.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        # header = tree.header()
-        # header.setSectionResizeMode(QHeaderView.Stretch)
         # 设置数据
         self.tree_model = QFileSystemModel()
         self.tree_model.setRootPath(str(self.dir_path.absolute()))
         tree.setModel(self.tree_model)
         tree.setRootIndex(self.tree_model.index(str(self.dir_path.absolute())))
-        # # 自适应行列
-        # tree.resizeColumnToContents(0)  # 调整列的大小以适应内容
 
     @Slot(QModelIndex)
     def on_fileTreeView_expanded(self, index):
@@ -91,3 +87,26 @@ class MainWindow(QMainWindow):
         if file_name.suffix.lower() in ['.jpg', '.jpeg', '.gif', '.png']:
             show_img_in_graphics_view(self.ui.graphicsView, file_name)
             self.ui.imageLabel.setText(f"{file_name.stem}")
+
+    @Slot()
+    def on_actionselect_csv_file_triggered(self):
+        # TODO: 实现思路上还有问题，有待调整，因为时间原因，所以暂时先不实现。
+        file_name, _ = QFileDialog.getOpenFileName(self, "选择图片",
+                                                   dir=str(PROJECT_ROOT),
+                                                   filter="csv文件 (*.csv)")
+        file_path = Path(file_name)
+        # create model
+        self.model = QStandardItemModel()
+        dict_reader = csv.DictReader(file_name)
+        data_list = []
+        for row in dict_reader:
+            image_name = row["Image"]
+            label = row["Label"]
+            label_number = row["Label_Number"]
+            item = QStandardItem()
+            item.setText(image_name)
+            item.setData(f"{label}-{label_number}")
+            data_list.append(item)
+        self.model.appendRow(data_list)
+        # set model
+        self.ui.fileTreeView.setModel(self.model)
