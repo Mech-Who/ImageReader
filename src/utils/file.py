@@ -6,8 +6,17 @@ from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QTreeWidgetItem, QGraphicsView, QGraphicsScene
 from PySide6.QtCore import Qt
 
-from src.config.path_config import ASSETS_ROOT
+from src.config.path_config import PathConfig
 
+path_config = PathConfig()
+
+
+def mkdir_if_missing(path: Union[str, Path]) -> bool:
+    if isinstance(path, str):
+        path = Path(path)
+    if not path.parent.exists():
+        mkdir_if_missing(path.parent)
+    path.mkdir()
 
 def getFileType(filename: Union[str, Path]) -> str:
     if not isinstance(filename, Path):
@@ -30,15 +39,15 @@ def create_top_item(top_item: QTreeWidgetItem, files: Union[List[str], List[Path
         child.setText(0, file_path.stem)
         child.setText(1, getFileType(file_path))
         if file_path.suffix in [".png", ".jpg", ".jpeg", ".gif"]:
-            child.setIcon(0, QIcon(str(ASSETS_ROOT / "icon/img.png")))
+            child.setIcon(0, QIcon(str(path_config.ASSETS_ROOT / "icon/img.png")))
         elif file_path.is_dir():
             child.setIcon(
-                0, QIcon(str(ASSETS_ROOT / "icon/dir-folder.png")))
+                0, QIcon(str(path_config.ASSETS_ROOT / "icon/dir-folder.png")))
             child_files = [file_path / file
                            for file in os.listdir(str(file_path))]
             create_top_item(child, child_files)
         else:
-            child.setIcon(0, QIcon(str(ASSETS_ROOT / "icon/file.png")))
+            child.setIcon(0, QIcon(str(path_config.ASSETS_ROOT / "icon/file.png")))
         top_item.addChild(child)
 
 def show_img_in_graphics_view(view: QGraphicsView, img_path: Union[str, Path]) -> None:

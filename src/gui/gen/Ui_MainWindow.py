@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ui_mainwindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.7.1
+## Created by: Qt User Interface Compiler version 6.6.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -18,8 +18,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QGraphicsView, QGridLayout, QHeaderView,
     QLabel, QMainWindow, QMenu, QMenuBar,
-    QSizePolicy, QStatusBar, QTabWidget, QTreeView,
-    QWidget)
+    QSizePolicy, QStatusBar, QTabWidget, QWidget)
+
+from src.gui.components.ImageTreeView import ImageTreeView
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -53,7 +54,7 @@ class Ui_MainWindow(object):
         self.dirTab.setObjectName(u"dirTab")
         self.gridLayout_2 = QGridLayout(self.dirTab)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.fileTreeView = QTreeView(self.dirTab)
+        self.fileTreeView = ImageTreeView(self.dirTab)
         self.fileTreeView.setObjectName(u"fileTreeView")
 
         self.gridLayout_2.addWidget(self.fileTreeView, 0, 0, 1, 1)
@@ -85,7 +86,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
